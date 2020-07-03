@@ -61,21 +61,59 @@ def sKinght(x , y):
     selecMove.add((newX , newY))
     newX = x - 1 
     selecMove.add((newX , newY))
-    checkAllSteps(selecMove)
+    checkBoardBords(selecMove)
     print (selecMove) 
     pass 
 
-def checkAllSteps(selecMove):
-    counter = 0 
-    for i in range(len(selecMove)):
-        if selecMove[counter][0] < 0 or selecMove[counter][0] > 7:
-            selecMove.remove(counter)
+def checkBoardBords(selecMove):
+    deleted = list()
+
+    for i in selecMove:
+        if i[0] < 0 or i[0] > 7:
+            deleted.append(i)
             continue
-        elif selecMove[counter][1] < 0 or selecMove[counter][1] > 7:
-            selecMove.remove(counter)
+        elif i[1] < 0 or i[1] > 7:
+            deleted.append(i)
             continue
-        counter += 1 
+
+    for i in deleted:
+        selecMove.discard(i)
+
     return 
 
+def sRook(x ,y):
+    for i in range(8):
+        if x+i > 7:
+            break;
+        if board[x+i][y] != ' ':
+            #chek if color
+            break;
+        selecMov.append((x+i , y))
+    for i in range(8):
+        if x-i < 0:
+            break;
+        if board[x-i][y] != ' ':
+            #chek if color
+            break;
+        selecmov.append((x-i , y))
+    for i in range(8):
+        if y-i < 0:
+            break;
+        if board[x][y-i] != ' ':
+            #chek if color
+            break;
+        selecmov.append((x , y-i))
+    for i in range(8):
+        if y+i > 7:
+            break;
+        if board[x][y+i] != ' ':
+            #chek if color
+            break;
+        selecmov.append((x , y+i))
+    return 
+
+def sBishop():
+
+    return 
 sKinght(1,2)
 main()

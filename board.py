@@ -55,15 +55,25 @@ class Board:
         self.currentPlayer = currentPlayer
         return
 
-    def move(self, pos1, pos2):
-        self.board[0].move(pos1)
+    def moveTo(self, pos):
+        pass
         return
 
     def select(self, pos1):
-        if self.board[pos1[0]][pos1[1]].kind == "p":
-            pass
+        x ,y = pos1
+        self.selecMove.cealr()
+        if self.board[pos1[0]][pos1[1]].kind == "P":
+            pass  
         elif self.board[pos1[0]][pos1[1]].kind == "K":
-            pass
+            self.sKing(x ,y) 
+        elif self.board[pos1[0]][pos1[1]].kind == "R":
+            self.sRook(x ,y)
+        elif self.board[pos1[0]][pos1[1]].kind == "Q":
+            self.sQueen(x ,y)
+        elif self.board[pos1[0]][pos1[1]].kind == "H":
+            self.sKinght(x ,y)
+        elif self.board[pos1[0]][pos1[1]].kind == "B":
+            self.sBishop(x ,y)
         return
     
     def check_limits(self):
@@ -213,7 +223,7 @@ def create_board():
     player2 = player(player2Name, "balck")
 
     r, c = (8, 8)
-    EasyForIf = {1: "p", 2: "r", 3: "h", 4: "b", 5: "K", 6: "q", 0: "E"}
+    EasyForIf = {1: "P", 2: "R", 3: "H", 4: "B", 5: "K", 6: "Q", 0: "E"}
     b = list()
     for i in range(r):
         rr = list()
@@ -242,8 +252,8 @@ def create_board():
             print(b[i][j], end=' ')
         print(" ")
     
-    bbb = Board(b ,player1) 
-    bbb.sBishop(1 ,2)
+    myBoard = Board(b ,player1) 
+    myBoard.sBishop(1 ,2)
     return
 
 create_board()

@@ -113,29 +113,34 @@ class Board:
         for i in range(8):
             if x+i > 7:
                 break;
-           # if board[x+i][y] != ' ':
-           #     break;
+            if self.board[x+i][y].color != 'non':
+                if self.board[x+i][y].color != self.board[x][y].color:
+                    self.selecMove.add((x+i , y))
+                break;
             self.selecMove.add((x+i , y))
         for i in range(8):
             if x-i < 0:
                 break;
-           # if board[x-i][y] != ' ':
-                #chek if color
-           #     break;
+            if self.board[x-i][y].color != 'non':
+                if self.board[x-i][y].color != self.board[x][y].color:
+                    self.selecMove.add((x-i, y))
+                break;
             self.selecMove.add((x-i , y))
         for i in range(8):
             if y-i < 0:
                 break;
-           # if board[x][y-i] != ' ':
-                #chek if color
-           #     break;
+            if self.board[x][y-i].color != 'non':
+                if self.board[x][y-i].color != self.board[x][y].color:
+                    self.selecMove.add((x, y-i))
+                break;
             self.selecMove.add((x , y-i))
         for i in range(8):
             if y+i > 7:
                 break;
-           # if board[x][y+i] != ' ':
-                #chek if color
-           #     break;
+            if self.board[x][y+i].color != 'non':
+                if self.board[x][y+i].color != self.board[x][y].color:
+                    self.selecMove.add((x, y+i))
+                break;
             self.selecMove.add((x , y+i))
         print (self.selecMove)
         return
@@ -144,31 +149,37 @@ class Board:
         for i in range(8):
             if y+i > 7 or x+i > 7:
                 break;
-            #if board[x+i][y+i] != ' ':
-            #    break;
+            if self.board[x+i][y+i].color != 'non':
+                if self.board[x+i][y+i].color != self.board[x][y].color:
+                    self.selecMove.add((x+i, y+i))
+                break;
             self.selecMove.add((x+i , y+i))
 
         for i in range(8):
             if y-i < 0 or x-i < 0:
                 break;
-            #if board[x-i][y-i] != ' ':
-                #chek if color
-            #    break;
+            if self.board[x-i][y-i].color != 'non':
+                if self.board[x-i][y-i].color != self.board[x][y].color:
+                    self.selecMove.add((x-i, y-i))
+                break;
             self.selecMove.add((x-i , y-i))
 
         for i in range(8):
             if y+i > 7 or x-i < 0 :
                 break;
-            #if board[x-i][y+i] != ' ':
-                #chek if color
-            #    break;
+            if self.board[x-i][y+i].color != 'non':
+                if self.board[x-i][y+i].color != self.board[x][y].color:
+                    self.selecMove.add((x-i , y+i))
+                break;
             self.selecMove.add((x-i , y+i))
 
         for i in range(8):
             if y-i < 0 or x+i > 7  :
                 break;
-            #if board[x+i][y-i] != ' ':
-            #    break;
+            if self.board[x+i][y-i].color != 'non':
+                if self.board[x+i][y-i].color != self.board[x][y].color:
+                    self.selecMove.add((x+i , y-i))
+                break;
             self.selecMove.add((x+i , y-i))
 
         print (self.selecMove)
@@ -188,7 +199,7 @@ class Board:
         self.selecMove.add((x+1,y-1))
         self.selecMove.add((x+1,y+1))
         self.selecMove.add((x-1,y+1))
-        # checkBoardBords()
+        self.check_limits()
         print (self.selecMove)
         return
 

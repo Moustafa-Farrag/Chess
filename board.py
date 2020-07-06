@@ -14,7 +14,7 @@ class pieces:
         self.pos = pos
         self.firstMove = True
         return
-    
+
     def select_piece(self, pos):
         pass
 
@@ -47,7 +47,7 @@ class Board:
     def __init__(self, board,  currentPlayer):
         self.currentPlayer = currentPlayer
         self.board = board
-        self.selecMov = set()
+        self.selPiece = pieces("non", (0, 0), "-")
         self.selecMove = set()
         return
 
@@ -56,26 +56,51 @@ class Board:
         return
 
     def moveTo(self, pos):
-        pass
+        if self.selPiece.color == "non":
+            return
+        if pos in self.selecMove:
+            pos1 = self.selPiece.pos
+            self.selPiece.move_piece(pos)
+            self.board[pos[0]][pos[1]].move_piece(pos1)
+            if self.board[pos[0]][pos[1]].color == "non":
+                temp = self.board[pos[0]][pos[1]]
+                self.board[pos[0]][pos[1]] = self.selPiece
+                self.board[pos1[0]][pos1[1]] = temp
+                print("non")
+                pass
         return
 
+    def changeSecBoard(self):
+        for i in self.selecMove:
+            if self.board[i[0]][i[1]].color == "non":
+                self.board[i[0]][i[1]].kind = "*"
+
+    def resetSecBoard(self):
+        for i in self.selecMove:
+            if self.board[i[0]][i[1]].color == "non":
+                self.board[i[0]][i[1]].kind = "-"
+
     def select(self, pos1):
-        x ,y = pos1
-        self.selecMove.cealr()
+        x, y = pos1
+        self.resetSecBoard()
+        self.selecMove.clear()
         if self.board[pos1[0]][pos1[1]].kind == "P":
-            pass  
+            self.sPawn(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "K":
-            self.sKing(x ,y) 
+            self.sKing(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "R":
-            self.sRook(x ,y)
+            self.sRook(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "Q":
-            self.sQueen(x ,y)
+            self.sQueen(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "H":
-            self.sKinght(x ,y)
+            self.sKinght(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "B":
-            self.sBishop(x ,y)
+            self.sBishop(x, y)
+        print(self.selecMove)
+        self.changeSecBoard()
+        self.selPiece = self.board[pos1[0]][pos1[1]]
         return
-    
+
     def check_limits(self):
         deleted = list()
         for i in self.selecMove:
@@ -86,131 +111,153 @@ class Board:
 
         for i in deleted:
             self.selecMove.discard(i)
-        
+
         return
 
-    def sKinght(self ,x, y):
+    def sPawn(self, x, y):
+        p = self.board[x][y]
+        if p.color == "white":
+            print("white")
+            if self.board[x-1][y].color == "non":
+                self.selecMove.add((x-1, y))
+                if self.board[x-1][y].color == "non":
+                    self.selecMove.add((x-1, y))
+            if self.board[x-1][y-1].color == "black":
+                self.selecMove.add((x-1, y-1))
+            if self.board[x-1][y+1].color == "black":
+                self.selecMove.add((x-1, y+1))
+        elif p.color == "black":
+            if self.board[x+1][y].color == "non":
+                self.selecMove.add((x+1, y))
+                if self.board[x+2][y].color == "non":
+                    self.selecMove.add((x+2, y))
+            if self.board[x+1][y-1].color == "white":
+                self.selecMove.add((x+1, y-1))
+            if self.board[x+1][y+1].color == "white":
+                self.selecMove.add((x+1, y+1))
+        return
+
+    def sKinght(self, x, y):
         newX = x - 2
         newY = y + 1
-        self.selecMove.add((newX , newY))
+        self.selecMove.add((newX, newY))
         newY = y - 1
-        self.selecMove.add((newX , newY))
-        #first one
+        self.selecMove.add((newX, newY))
+        # first one
         newX = x + 2
         newY = y + 1
-        self.selecMove.add((newX , newY))
+        self.selecMove.add((newX, newY))
         newY = y - 1
-        self.selecMove.add((newX , newY))
-        #first two
+        self.selecMove.add((newX, newY))
+        # first two
         newY = y + 2
         newX = x + 1
-        self.selecMove.add((newX , newY))
+        self.selecMove.add((newX, newY))
         newX = x - 1
-        self.selecMove.add((newX , newY))
-        #fitst three
+        self.selecMove.add((newX, newY))
+        # fitst three
         newY = y - 2
         newX = x + 1
-        self.selecMove.add((newX , newY))
+        self.selecMove.add((newX, newY))
         newX = x - 1
-        self.selecMove.add((newX , newY))
-        # checkBoardBords()
-        self.check_limit()
-        print (self.selecMove)
+        self.selecMove.add((newX, newY))
+        self.check_limits()
+        print(self.selecMove)
         pass
         return
 
-    def sRook(self ,x ,y):
+    def sRook(self, x, y):
         for i in range(8):
             if x+i > 7:
-                break;
+                break
             if self.board[x+i][y].color != 'non':
                 if self.board[x+i][y].color != self.board[x][y].color:
-                    self.selecMove.add((x+i , y))
-                break;
-            self.selecMove.add((x+i , y))
+                    self.selecMove.add((x+i, y))
+                break
+            self.selecMove.add((x+i, y))
         for i in range(8):
             if x-i < 0:
-                break;
+                break
             if self.board[x-i][y].color != 'non':
                 if self.board[x-i][y].color != self.board[x][y].color:
                     self.selecMove.add((x-i, y))
-                break;
-            self.selecMove.add((x-i , y))
+                break
+            self.selecMove.add((x-i, y))
         for i in range(8):
             if y-i < 0:
-                break;
+                break
             if self.board[x][y-i].color != 'non':
                 if self.board[x][y-i].color != self.board[x][y].color:
                     self.selecMove.add((x, y-i))
-                break;
-            self.selecMove.add((x , y-i))
+                break
+            self.selecMove.add((x, y-i))
         for i in range(8):
             if y+i > 7:
-                break;
+                break
             if self.board[x][y+i].color != 'non':
                 if self.board[x][y+i].color != self.board[x][y].color:
                     self.selecMove.add((x, y+i))
-                break;
-            self.selecMove.add((x , y+i))
-        print (self.selecMove)
+                break
+            self.selecMove.add((x, y+i))
+        print(self.selecMove)
         return
 
-    def sBishop(self ,x ,y):
+    def sBishop(self, x, y):
         for i in range(8):
             if y+i > 7 or x+i > 7:
-                break;
+                break
             if self.board[x+i][y+i].color != 'non':
                 if self.board[x+i][y+i].color != self.board[x][y].color:
                     self.selecMove.add((x+i, y+i))
-                break;
-            self.selecMove.add((x+i , y+i))
+                break
+            self.selecMove.add((x+i, y+i))
 
         for i in range(8):
             if y-i < 0 or x-i < 0:
-                break;
+                break
             if self.board[x-i][y-i].color != 'non':
                 if self.board[x-i][y-i].color != self.board[x][y].color:
                     self.selecMove.add((x-i, y-i))
-                break;
-            self.selecMove.add((x-i , y-i))
+                break
+            self.selecMove.add((x-i, y-i))
 
         for i in range(8):
-            if y+i > 7 or x-i < 0 :
-                break;
+            if y+i > 7 or x-i < 0:
+                break
             if self.board[x-i][y+i].color != 'non':
                 if self.board[x-i][y+i].color != self.board[x][y].color:
-                    self.selecMove.add((x-i , y+i))
-                break;
-            self.selecMove.add((x-i , y+i))
+                    self.selecMove.add((x-i, y+i))
+                break
+            self.selecMove.add((x-i, y+i))
 
         for i in range(8):
-            if y-i < 0 or x+i > 7  :
-                break;
+            if y-i < 0 or x+i > 7:
+                break
             if self.board[x+i][y-i].color != 'non':
                 if self.board[x+i][y-i].color != self.board[x][y].color:
-                    self.selecMove.add((x+i , y-i))
-                break;
-            self.selecMove.add((x+i , y-i))
+                    self.selecMove.add((x+i, y-i))
+                break
+            self.selecMove.add((x+i, y-i))
 
-        print (self.selecMove)
+        print(self.selecMov)
         return
 
     def sQueen(self, x, y):
-        self.sRook(x,y)
-        self.sBishop(x,y)
+        self.sRook(x, y)
+        self.sBishop(x, y)
         return
 
-    def sKing(self ,x,y):
-        self.selecMove.add((x+1,y))
-        self.selecMove.add((x-1,y))
-        self.selecMove.add((x,y+1))
-        self.selecMove.add((x,y-1))
-        self.selecMove.add((x-1,y-1))
-        self.selecMove.add((x+1,y-1))
-        self.selecMove.add((x+1,y+1))
-        self.selecMove.add((x-1,y+1))
+    def sKing(self, x, y):
+        self.selecMove.add((x+1, y))
+        self.selecMove.add((x-1, y))
+        self.selecMove.add((x, y+1))
+        self.selecMove.add((x, y-1))
+        self.selecMove.add((x-1, y-1))
+        self.selecMove.add((x+1, y-1))
+        self.selecMove.add((x+1, y+1))
+        self.selecMove.add((x-1, y+1))
         self.check_limits()
-        print (self.selecMove)
+        print(self.selecMove)
         return
 
 
@@ -229,13 +276,13 @@ def create_board():
         rr = list()
         for j in range(c):
             if i < 2:
-                one = pieces("white", (i, j), "p")
+                one = pieces("black", (i, j), "P")
                 player1.add_piece(one)
             elif i > 5:
-                one = pieces("black", (i, j), "p")
+                one = pieces("white", (i, j), "P")
                 player2.add_piece(one)
             else:
-                one = pieces("non", (i, j), "non")
+                one = pieces("non", (i, j), "-")
 
             rr.append(one)
 
@@ -247,24 +294,19 @@ def create_board():
         b[7][i].kind = EasyForIf[i+2]
         b[7][7-i].kind = EasyForIf[i+2]
 
-    for i in range(8):
-        for j in range(8):
-            print(b[i][j], end=' ')
-        print(" ")
-    
-    myBoard = Board(b ,player1) 
-    myBoard.sBishop(1 ,2)
+    myBoard = Board(b, player1)
+    while True:
+        for i in range(8):
+            for j in range(8):
+                print(b[i][j], end=' ')
+            print(" ")
+
+        print(myBoard.selecMove)
+        i = int(input("enter selected: "))
+        j = int(input("enter selected: "))
+        myBoard.select((i, j))
+
     return
 
+
 create_board()
-
-
-
-#main()
-#sKing(1,2)
-#sQueen(1 ,2)
-#sKinght(1,2)
-#for i in selecMove:
-#    board[i[0]][i[1]] = 9
-#for i in range(8):
-#    print(str(board[i]).replace("," , ""))

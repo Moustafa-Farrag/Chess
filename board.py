@@ -1,4 +1,7 @@
-# whate is the err
+import os
+from colorama import Fore, init
+
+init(autoreset=True)
 
 
 class pieces:
@@ -55,9 +58,10 @@ class Board:
         self.currentPlayer = currentPlayer
         return
 
-    def moveTo(self, pos):
+    def moveTo(self, pos, player):
         if self.selPiece.color == "non":
             return
+        print(self.selecMove, pos)
         if pos in self.selecMove:
             pos1 = self.selPiece.pos
             self.selPiece.move_piece(pos)
@@ -66,8 +70,16 @@ class Board:
                 temp = self.board[pos[0]][pos[1]]
                 self.board[pos[0]][pos[1]] = self.selPiece
                 self.board[pos1[0]][pos1[1]] = temp
-                print("non")
+            else:
+                temp = self.board[pos[0]][pos[1]]
+                self.board[pos[0]][pos[1]] = self.selPiece
+                self.board[pos1[0]][pos1[1]] = temp
+                player.Allpieces.discard(temp)
                 pass
+            self.board[pos1[0]][pos1[1]].color = "non"
+            self.board[pos1[0]][pos1[1]].kind = "-"
+        self.resetSecBoard()
+        self.selecMove.clear()
         return
 
     def changeSecBoard(self):
@@ -79,6 +91,14 @@ class Board:
         for i in self.selecMove:
             if self.board[i[0]][i[1]].color == "non":
                 self.board[i[0]][i[1]].kind = "-"
+
+    def checkColorMove(self, color):
+        deleted = set()
+        for i in self.selecMove:
+            if self.board[i[0]][i[1]].color == color:
+                deleted.add(i)
+        for i in deleted:
+            self.selecMove.discard(i)
 
     def select(self, pos1):
         x, y = pos1
@@ -120,8 +140,9 @@ class Board:
             print("white")
             if self.board[x-1][y].color == "non":
                 self.selecMove.add((x-1, y))
-                if self.board[x-1][y].color == "non":
-                    self.selecMove.add((x-1, y))
+                if self.board[x-2][y].color == "non":
+                    if not self.board[x][y].firstMove:
+                        self.selecMove.add((x-2, y))
             if self.board[x-1][y-1].color == "black":
                 self.selecMove.add((x-1, y-1))
             if self.board[x-1][y+1].color == "black":
@@ -130,7 +151,8 @@ class Board:
             if self.board[x+1][y].color == "non":
                 self.selecMove.add((x+1, y))
                 if self.board[x+2][y].color == "non":
-                    self.selecMove.add((x+2, y))
+                    if not self.board[x][y].firstMove:
+                        self.selecMove.add((x+2, y))
             if self.board[x+1][y-1].color == "white":
                 self.selecMove.add((x+1, y-1))
             if self.board[x+1][y+1].color == "white":
@@ -162,6 +184,7 @@ class Board:
         newX = x - 1
         self.selecMove.add((newX, newY))
         self.check_limits()
+        self.checkColorMove(self.board[x][y].color)
         print(self.selecMove)
         pass
         return
@@ -239,7 +262,7 @@ class Board:
                 break
             self.selecMove.add((x+i, y-i))
 
-        print(self.selecMov)
+        print(self.selecMove)
         return
 
     def sQueen(self, x, y):
@@ -257,6 +280,7 @@ class Board:
         self.selecMove.add((x+1, y+1))
         self.selecMove.add((x-1, y+1))
         self.check_limits()
+        self.checkColorMove(self.board[x][y].color)
         print(self.selecMove)
         return
 
@@ -298,14 +322,25 @@ def create_board():
     while True:
         for i in range(8):
             for j in range(8):
-                print(b[i][j], end=' ')
+                if b[i][j].color == "white":
+                    print(Fore.RED + b[i][j].kind, end=' ')
+                elif b[i][j].color == "black":
+                    print(Fore.BLUE + b[i][j].kind, end=' ')
+                else:
+                    print(b[i][j].kind, end=' ')
             print(" ")
 
         print(myBoard.selecMove)
-        i = int(input("enter selected: "))
-        j = int(input("enter selected: "))
-        myBoard.select((i, j))
+        myInput = input("enter your order: ")
+        arrIn = myInput.split(":")
+        if arrIn[0] == "sel":
+            InP = arrIn[1].split(" ")
+            myBoard.select((int(InP[0]), int(InP[1])))
+        elif arrIn[0] == "moveto":
+            InP = arrIn[1].split(" ")
+            myBoard.moveTo((int(InP[0]), int(InP[1])), player2)
 
+        os.system('cls' if os.name == 'nt' else 'clear')
     return
 
 

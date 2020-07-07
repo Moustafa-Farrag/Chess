@@ -1,48 +1,5 @@
-import os
-from colorama import Fore, init
-
-init(autoreset=True)
-
-
-class pieces:
-
-    def __init__(self, color, pos, kind):
-        self.color = color
-        self.pos = pos
-        self.kind = kind
-        self.firstMove = False
-        return
-
-    def move_piece(self, pos):
-        self.pos = pos
-        self.firstMove = True
-        return
-
-    def select_piece(self, pos):
-        pass
-
-    def __str__(self):
-        return self.kind
-
-
 # self.color + " " + str(self.pos) + " " + self.kind
-
-class player:
-
-    def __init__(self, name, color):
-        self.Allpieces = set()
-        self.name = name
-        self.color = color
-        self.time = 0
-        return
-
-    def remove_piece(self, pieces):
-        self.Allpieces.discard(pieces)
-        return
-
-    def add_piece(self, pieces):
-        self.Allpieces.add(pieces)
-        return
+import pieces as pi
 
 
 class Board:
@@ -50,7 +7,7 @@ class Board:
     def __init__(self, board,  currentPlayer):
         self.currentPlayer = currentPlayer
         self.board = board
-        self.selPiece = pieces("non", (0, 0), "-")
+        self.selPiece = pi.pieces("non", (0, 0), "-")
         self.selecMove = set()
         return
 
@@ -101,6 +58,8 @@ class Board:
             self.selecMove.discard(i)
 
     def select(self, pos1):
+        if self.currentPlayer.color != self.board[pos1[0]][pos1[1]].color:
+            return
         x, y = pos1
         self.resetSecBoard()
         self.selecMove.clear()
@@ -109,6 +68,7 @@ class Board:
         elif self.board[pos1[0]][pos1[1]].kind == "K":
             self.sKing(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "R":
+            print("ROOOOK")
             self.sRook(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "Q":
             self.sQueen(x, y)
@@ -190,33 +150,37 @@ class Board:
         return
 
     def sRook(self, x, y):
-        for i in range(8):
+        for i in range(1, 8):
             if x+i > 7:
                 break
+            print(x+i, y, self.board[x+i][y].kind, self.board[x+i][y].color)
             if self.board[x+i][y].color != 'non':
                 if self.board[x+i][y].color != self.board[x][y].color:
                     self.selecMove.add((x+i, y))
                 break
             self.selecMove.add((x+i, y))
-        for i in range(8):
+        for i in range(1, 8):
             if x-i < 0:
                 break
+            print(x-i, y, self.board[x-i][y].kind, self.board[x-i][y].color)
             if self.board[x-i][y].color != 'non':
                 if self.board[x-i][y].color != self.board[x][y].color:
                     self.selecMove.add((x-i, y))
                 break
             self.selecMove.add((x-i, y))
-        for i in range(8):
+        for i in range(1, 8):
             if y-i < 0:
                 break
+            print(x, y-i, self.board[x][y-i].kind, self.board[x][y-i].color)
             if self.board[x][y-i].color != 'non':
                 if self.board[x][y-i].color != self.board[x][y].color:
                     self.selecMove.add((x, y-i))
                 break
             self.selecMove.add((x, y-i))
-        for i in range(8):
+        for i in range(1, 8):
             if y+i > 7:
                 break
+            print(x, y+i, self.board[x][y+i].kind, self.board[x][y+i].color)
             if self.board[x][y+i].color != 'non':
                 if self.board[x][y+i].color != self.board[x][y].color:
                     self.selecMove.add((x, y+i))
@@ -226,7 +190,7 @@ class Board:
         return
 
     def sBishop(self, x, y):
-        for i in range(8):
+        for i in range(1, 8):
             if y+i > 7 or x+i > 7:
                 break
             if self.board[x+i][y+i].color != 'non':
@@ -235,7 +199,7 @@ class Board:
                 break
             self.selecMove.add((x+i, y+i))
 
-        for i in range(8):
+        for i in range(1, 8):
             if y-i < 0 or x-i < 0:
                 break
             if self.board[x-i][y-i].color != 'non':
@@ -244,7 +208,7 @@ class Board:
                 break
             self.selecMove.add((x-i, y-i))
 
-        for i in range(8):
+        for i in range(1, 8):
             if y+i > 7 or x-i < 0:
                 break
             if self.board[x-i][y+i].color != 'non':
@@ -253,7 +217,7 @@ class Board:
                 break
             self.selecMove.add((x-i, y+i))
 
-        for i in range(8):
+        for i in range(1, 8):
             if y-i < 0 or x+i > 7:
                 break
             if self.board[x+i][y-i].color != 'non':
@@ -283,65 +247,3 @@ class Board:
         self.checkColorMove(self.board[x][y].color)
         print(self.selecMove)
         return
-
-
-def create_board():
-
-    player1Name = input("enter player1 name: ")
-    player2Name = input("enter player2 name: ")
-
-    player1 = player(player1Name, "white")
-    player2 = player(player2Name, "balck")
-
-    r, c = (8, 8)
-    EasyForIf = {1: "P", 2: "R", 3: "H", 4: "B", 5: "K", 6: "Q", 0: "E"}
-    b = list()
-    for i in range(r):
-        rr = list()
-        for j in range(c):
-            if i < 2:
-                one = pieces("black", (i, j), "P")
-                player1.add_piece(one)
-            elif i > 5:
-                one = pieces("white", (i, j), "P")
-                player2.add_piece(one)
-            else:
-                one = pieces("non", (i, j), "-")
-
-            rr.append(one)
-
-        b.append(rr)
-
-    for i in range(3):
-        b[0][i].kind = EasyForIf[i+2]
-        b[0][7-i].kind = EasyForIf[i+2]
-        b[7][i].kind = EasyForIf[i+2]
-        b[7][7-i].kind = EasyForIf[i+2]
-
-    myBoard = Board(b, player1)
-    while True:
-        for i in range(8):
-            for j in range(8):
-                if b[i][j].color == "white":
-                    print(Fore.RED + b[i][j].kind, end=' ')
-                elif b[i][j].color == "black":
-                    print(Fore.BLUE + b[i][j].kind, end=' ')
-                else:
-                    print(b[i][j].kind, end=' ')
-            print(" ")
-
-        print(myBoard.selecMove)
-        myInput = input("enter your order: ")
-        arrIn = myInput.split(":")
-        if arrIn[0] == "sel":
-            InP = arrIn[1].split(" ")
-            myBoard.select((int(InP[0]), int(InP[1])))
-        elif arrIn[0] == "moveto":
-            InP = arrIn[1].split(" ")
-            myBoard.moveTo((int(InP[0]), int(InP[1])), player2)
-
-        os.system('cls' if os.name == 'nt' else 'clear')
-    return
-
-
-create_board()

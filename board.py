@@ -17,7 +17,7 @@ class Board:
 
     def moveTo(self, pos, player):
         if self.selPiece.color == "non":
-            return
+            return False
         print(self.selecMove, pos)
         if pos in self.selecMove:
             pos1 = self.selPiece.pos
@@ -35,9 +35,12 @@ class Board:
                 pass
             self.board[pos1[0]][pos1[1]].color = "non"
             self.board[pos1[0]][pos1[1]].kind = "-"
+            self.resetSecBoard()
+            self.selecMove.clear()
+            return True
         self.resetSecBoard()
         self.selecMove.clear()
-        return
+        return False
 
     def changeSecBoard(self):
         for i in self.selecMove:
@@ -59,6 +62,9 @@ class Board:
 
     def select(self, pos1):
         if self.currentPlayer.color != self.board[pos1[0]][pos1[1]].color:
+            # print(self.currentPlayer.color,
+            # self.board[pos1[0]][pos1[1]].color,
+            # self.board[pos1[0]][pos1[1]].kind)
             return
         x, y = pos1
         self.resetSecBoard()
@@ -68,7 +74,6 @@ class Board:
         elif self.board[pos1[0]][pos1[1]].kind == "K":
             self.sKing(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "R":
-            print("ROOOOK")
             self.sRook(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "Q":
             self.sQueen(x, y)
@@ -76,7 +81,6 @@ class Board:
             self.sKinght(x, y)
         elif self.board[pos1[0]][pos1[1]].kind == "B":
             self.sBishop(x, y)
-        print(self.selecMove)
         self.changeSecBoard()
         self.selPiece = self.board[pos1[0]][pos1[1]]
         return

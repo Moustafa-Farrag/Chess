@@ -44,7 +44,7 @@ def create_board():
     b[0][3].kind = EasyForIf[6]
     b[7][4].kind = EasyForIf[5]
     b[7][3].kind = EasyForIf[6]
-    myBoard = bo.Board(b, player1)
+    myBoard = bo.Board(b, player1, b[0][4], b[7][4])
     counter = 0
     while True:
 
@@ -72,21 +72,23 @@ def create_board():
         myInput = input("enter your order: ")
         arrIn = myInput.split(":")
         if arrIn[0] == "s":
-            InP = arrIn[1].split(" ")
-            x = ord(InP[1]) - ord('a')
-            myBoard.select((x, int(InP[2]) - 1))
+            InP = arrIn[1].strip().split(" ")
+            x = ord(InP[0]) - ord('a')
+            myBoard.select((x, int(InP[1]) - 1))
         elif arrIn[0] == "m":
-            InP = arrIn[1].split(" ")
+            InP = arrIn[1].strip().split(" ")
             done = False
             if counter % 2 == 0:
-                x = ord(InP[1]) - ord('a')
-                done = myBoard.moveTo((x, int(InP[2]) - 1), player2)
+                x = ord(InP[0]) - ord('a')
+                done = myBoard.moveTo((x, int(InP[1]) - 1), player2)
             else:
-                x = ord(InP[1]) - ord('a')
-                done = myBoard.moveTo((x, int(InP[2]) - 1), player1)
+                x = ord(InP[0]) - ord('a')
+                done = myBoard.moveTo((x, int(InP[1]) - 1), player1)
 
             if done is True:
                 counter += 1
+        elif arrIn[0] == "stop":
+            break
 
         os.system('cls' if os.name == 'nt' else 'clear')
     return

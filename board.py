@@ -4,10 +4,12 @@ import pieces as pi
 
 class Board:
 
-    def __init__(self, board,  currentPlayer):
+    def __init__(self, board, currentPlayer, player1king, player2king):
         self.currentPlayer = currentPlayer
         self.board = board
         self.selPiece = pi.pieces("non", (0, 0), "-")
+        self.player1King = player1king
+        self.player2King = player2king
         self.selecMove = set()
         return
 
@@ -35,6 +37,13 @@ class Board:
                 pass
             self.board[pos1[0]][pos1[1]].color = "non"
             self.board[pos1[0]][pos1[1]].kind = "-"
+            self.resetSecBoard()
+            self.selecMove.clear()
+            self.select(pos)
+            if self.player1King.pos in self.selecMove:
+                print("KKKKKKKKKKKKKKKKKKKKKKKKKK")
+            elif self.player2King.pos in self.selecMove:
+                print("KKKKKKKKKKKKKKKKKKKKKKKKKK")
             self.resetSecBoard()
             self.selecMove.clear()
             return True

@@ -1,4 +1,3 @@
-# Python program to print
 # red text with green background
 
 from colorama import init, Fore, Back, Style

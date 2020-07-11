@@ -2,6 +2,12 @@ from colorama import Fore, init
 import pieces as pi
 import board as bo
 import player as pl
+import King as Ki
+import Pawn as Pa
+import Rook as Ro
+import Knight as Kn
+import Queen as Qu
+import Bishop as Bi
 import os
 
 init(autoreset=True)
@@ -16,35 +22,49 @@ def create_board():
     player2 = pl.player(player2Name, "black")
 
     r, c = (8, 8)
-    EasyForIf = {1: "P", 2: "R", 3: "H", 4: "B", 5: "K", 6: "Q", 0: "E"}
+    # EasyForIf = {1: "P", 2: "R", 3: "H", 4: "B", 5: "K", 6: "Q", 0: "E"}
     b = list()
     for i in range(r):
         rr = list()
         for j in range(c):
-            if i < 2:
-                one = pi.pieces("black", (i, j), "P")
+            if i == 1:
+                one = Pa.Pawn("black", (i, j))
                 player1.add_piece(one)
-            elif i > 5:
-                one = pi.pieces("white", (i, j), "P")
+            elif i == 6:
+                one = Pa.Pawn("white", (i, j))
                 player2.add_piece(one)
             else:
-                one = pi.pieces("non", (i, j), "-")
+                one = pi.pieces((i, j))
 
             rr.append(one)
 
         b.append(rr)
 
     for i in range(3):
-        b[0][i].kind = EasyForIf[i+2]
-        b[0][7-i].kind = EasyForIf[i+2]
-        b[7][i].kind = EasyForIf[i+2]
-        b[7][7-i].kind = EasyForIf[i+2]
+        if i == 0:
+            b[0][i] = Ro.Rook("black", (0, i))
+            b[0][7-i] = Ro.Rook("black", (0, 7-i))
+            b[7][i] = Ro.Rook("white", (7, i))
+            b[7][7-i] = Ro.Rook("white", (7, 7-i))
+        if i == 1:
+            b[0][i] = Kn.Knight("black", (0, i))
+            b[0][7-i] = Kn.Knight("black", (0, 7-i))
+            b[7][i] = Kn.Knight("white", (7, i))
+            b[7][7-i] = Kn.Knight("white", (7, 7-i))
+        if i == 2:
+            b[0][i] = Bi.Bishop("black", (0, i))
+            b[0][7-i] = Bi.Bishop("black", (0, 7-i))
+            b[7][i] = Bi.Bishop("white", (7, i))
+            b[7][7-i] = Bi.Bishop("white", (7, 7-i))
 
-    b[0][4].kind = EasyForIf[5]
-    b[0][3].kind = EasyForIf[6]
-    b[7][4].kind = EasyForIf[5]
-    b[7][3].kind = EasyForIf[6]
+    b[0][4] = Ki.King("black", (0, 4))
+    b[0][3] = Qu.Queen("black", (0, 3))
+    b[7][4] = Ki.King("white", (7, 4))
+    b[7][3] = Qu.Queen("white", (0, 3))
+
     myBoard = bo.Board(b, player1, b[0][4], b[7][4])
+    print(b[7][4].kind, b[7][4].color, b[7][4].pos)
+    b[7][4].select_piece(myBoard)
     counter = 0
     while True:
 
